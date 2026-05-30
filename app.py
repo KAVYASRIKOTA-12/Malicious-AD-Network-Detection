@@ -1,0 +1,31 @@
+import joblib
+from flask import Flask, render_template, request
+from utils import extract_features
+
+app = Flask(__name__)
+model = joblib.load("model.pkl")
+
+@app.route('/', methods=['GET', 'POST'])
+def home():
+    prediction = None
+    risk_score = None
+
+    if request.method == 'POST':
+        url = request.form['url']
+        features = [extract_features(url)]
+
+        result = model.predict(features)[0]
+        probability = model.predict_proba(features)[0][1]
+        risk_score = round(probability * 100, 2)
+
+        if result == 1:
+            prediction = "⚠️ Malicious URL Detected!"
+        else:
+            prediction = "✅ Safe URL"
+
+    return render_template("index.html",
+                           prediction=prediction,
+                           risk_score=risk_score)
+
+if __name__ == "__main__":
+    app.run(debug=True)
