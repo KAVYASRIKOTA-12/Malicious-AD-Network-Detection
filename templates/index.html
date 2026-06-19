@@ -1,31 +1,208 @@
-import joblib
-from flask import Flask, render_template, request
-from utils import extract_features
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <title>Form Validation Project</title>
 
-app = Flask(__name__)
-model = joblib.load("model.pkl")
+    <!-- Bootstrap CDN -->
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.2/dist/css/bootstrap.min.css" rel="stylesheet">
 
-@app.route('/', methods=['GET', 'POST'])
-def home():
-    prediction = None
-    risk_score = None
+    <style>
+        body {
+            background: linear-gradient(to right, #667eea, #764ba2);
+            font-family: Arial, sans-serif;
+        }
 
-    if request.method == 'POST':
-        url = request.form['url']
-        features = [extract_features(url)]
+        .form-container {
+            background: white;
+            padding: 30px;
+            border-radius: 10px;
+            margin-top: 50px;
+            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
+        }
 
-        result = model.predict(features)[0]
-        probability = model.predict_proba(features)[0][1]
-        risk_score = round(probability * 100, 2)
+        .error {
+            color: red;
+            font-size: 14px;
+        }
 
-        if result == 1:
-            prediction = "⚠️ Malicious URL Detected!"
-        else:
-            prediction = "✅ Safe URL"
+        .success {
+            color: green;
+            font-size: 16px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
 
-    return render_template("index.html",
-                           prediction=prediction,
-                           risk_score=risk_score)
+<div class="container">
+    <div class="row justify-content-center">
+        <div class="col-md-6 form-container">
+            <h3 class="text-center mb-4">Registration Form</h3>
 
-if __name__ == "__main__":
-    app.run(debug=True)
+            <!-- Form with onSubmit -->
+            <form id="myForm" onsubmit="return validateForm()">
+
+                <!-- Full Name -->
+                <div class="mb-3">
+                    <label class="form-label">Full Name</label>
+                    <input type="text" id="name" class="form-control" onchange="validateName()">
+                    <div id="nameError" class="error"></div>
+                </div>
+
+                <!-- Email -->
+                <div class="mb-3">
+                    <label class="form-label">Email ID</label>
+                    <input type="text" id="email" class="form-control" onchange="validateEmail()">
+                    <div id="emailError" class="error"></div>
+                </div>
+
+                <!-- Phone -->
+                <div class="mb-3">
+                    <label class="form-label">Phone Number</label>
+                    <input type="text" id="phone" class="form-control" onchange="validatePhone()">
+                    <div id="phoneError" class="error"></div>
+                </div>
+
+                <!-- Password -->
+                <div class="mb-3">
+                    <label class="form-label">Password</label>
+                    <input type="password" id="password" class="form-control" onchange="validatePassword()">
+                    <div id="passwordError" class="error"></div>
+                </div>
+
+                <!-- Confirm Password -->
+                <div class="mb-3">
+                    <label class="form-label">Confirm Password</label>
+                    <input type="password" id="confirmPassword" class="form-control" onchange="validateConfirmPassword()">
+                    <div id="confirmError" class="error"></div>
+                </div>
+
+                <button type="submit" class="btn btn-primary w-100">Submit</button>
+
+                <div id="successMessage" class="success mt-3"></div>
+
+            </form>
+        </div>
+    </div>
+</div>
+
+<script>
+
+// Validate Full Name
+function validateName() {
+    let name = document.getElementById("name").value;
+    let nameError = document.getElementById("nameError");
+
+    if (name.length < 5) {
+        nameError.innerHTML = "Name must be at least 5 characters";
+        return false;
+    } else {
+        nameError.innerHTML = "";
+        return true;
+    }
+}
+
+// Validate Email
+function validateEmail() {
+    let email = document.getElementById("email").value;
+    let emailError = document.getElementById("emailError");
+
+    if (!email.includes("@")) {
+        emailError.innerHTML = "Enter correct email";
+        return false;
+    } else {
+        emailError.innerHTML = "";
+        return true;
+    }
+}
+
+// Validate Phone
+function validatePhone() {
+    let phone = document.getElementById("phone").value;
+    let phoneError = document.getElementById("phoneError");
+
+    // Check if 10 digits
+    if (phone.length != 10 || isNaN(phone)) {
+        phoneError.innerHTML = "Phone number must be 10 digits";
+        return false;
+    }
+
+    if (phone === "1234567890") {
+        phoneError.innerHTML = "Invalid phone number";
+        return false;
+    }
+
+    phoneError.innerHTML = "";
+    return true;
+}
+
+// Validate Password
+function validatePassword() {
+    let password = document.getElementById("password").value;
+    let name = document.getElementById("name").value;
+    let passwordError = document.getElementById("passwordError");
+
+    if (password.length < 8) {
+        passwordError.innerHTML = "Password must be at least 8 characters";
+        return false;
+    }
+
+    if (password.toLowerCase() === "password") {
+        passwordError.innerHTML = "Password cannot be 'password'";
+        return false;
+    }
+
+    if (password.toLowerCase() === name.toLowerCase()) {
+        passwordError.innerHTML = "Password cannot be your name";
+        return false;
+    }
+
+    passwordError.innerHTML = "";
+    return true;
+}
+
+// Validate Confirm Password
+function validateConfirmPassword() {
+    let password = document.getElementById("password").value;
+    let confirmPassword = document.getElementById("confirmPassword").value;
+    let confirmError = document.getElementById("confirmError");
+
+    if (password !== confirmPassword) {
+        confirmError.innerHTML = "Passwords do not match";
+        return false;
+    } else {
+        confirmError.innerHTML = "";
+        return true;
+    }
+}
+
+// Final Form Validation using onSubmit
+function validateForm() {
+
+    let validations = [
+        validateName(),
+        validateEmail(),
+        validatePhone(),
+        validatePassword(),
+        validateConfirmPassword()
+    ];
+
+    // Loop to check if any validation failed
+    for (let i = 0; i < validations.length; i++) {
+        if (validations[i] === false) {
+            alert("Please fix the errors before submitting!");
+            return false;
+        }
+    }
+
+    document.getElementById("successMessage").innerHTML = 
+        "Form submitted successfully!";
+
+    return false; // prevent actual form submission for demo
+}
+
+</script>
+
+</body>
+</html>
