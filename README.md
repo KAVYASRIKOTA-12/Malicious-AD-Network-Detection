@@ -151,33 +151,20 @@ These features are extracted using Python's urlparse and regular expressions.
 
 ## 📂 Project Structure
 
-
 Malicious-AD-Network-Detection/
 │
 ├── app.py
-│   └── Flask application and prediction logic
-│
 ├── train_model.py
-│   └── Machine Learning model training
-│
 ├── dataset_generator.py
-│   └── Dataset generation
-│
 ├── dataset.csv
-│   └── URL dataset
-│
 ├── utils.py
-│   └── URL feature extraction
-│
 ├── model.pkl
-│   └── Trained Random Forest model
-│
 ├── index.html
-│   └── Web interface
-│
 ├── requirements.txt
-│   └── Python dependencies
-
+├── README.md
+├── homepage.png
+├── safe-url.png
+└── malicious-url.png
 
 ---
 
