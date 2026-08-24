@@ -87,6 +87,8 @@ The application extracts the following features from each URL:
 These features are extracted using Python's urlparse and regular expressions.
 
 ---
+## 🔄 Project Workflow
+
 
                     ┌─────────────────────┐
                     │     User Input      │
@@ -114,7 +116,7 @@ These features are extracted using Python's urlparse and regular expressions.
                     │ Prediction + Risk   │
                     │       Score         │
                     └─────────────────────┘
-
+---
 
 ## ⚙️ Technologies Used
 
@@ -146,25 +148,6 @@ These features are extracted using Python's urlparse and regular expressions.
 * CSS
 * JavaScript
 * Bootstrap
-
----
-
-## 📂 Project Structure
-
-Malicious-AD-Network-Detection/
-│
-├── app.py
-├── train_model.py
-├── dataset_generator.py
-├── dataset.csv
-├── utils.py
-├── model.pkl
-├── index.html
-├── requirements.txt
-├── README.md
-├── homepage.png
-├── safe-url.png
-└── malicious-url.png
 
 ---
 
